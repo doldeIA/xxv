@@ -11,7 +11,7 @@ const CloseIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     className="w-6 h-6"
     {...props}
   >
-    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
   </svg>
 );
 

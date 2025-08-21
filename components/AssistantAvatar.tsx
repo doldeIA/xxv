@@ -14,13 +14,13 @@ const AssistantAvatar: React.FC<AssistantAvatarProps> = ({ className = "w-10 h-1
         }
         target.dataset.retried = 'true';
         // Retry loading the image to ensure it is displayed
-        target.src = '/amarastelive.jpg';
+        target.src = '/chat-perfil.jpg';
     };
 
     return (
         <img
-          src="/amarastelive.jpg"
-          alt="Amarasté Avatar"
+          src="/chat-perfil.jpg"
+          alt="Chat Avatar"
           loading="lazy"
           className={`${className} rounded-full object-cover shadow-md animate-fade-in ring-2 ring-white/10`}
           onError={handleImageError}

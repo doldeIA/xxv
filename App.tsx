@@ -17,9 +17,50 @@ import ProdutosLoginPage from './components/ProdutosLoginPage';
 import AdminPanel from './components/AdminPanel';
 import AdminLoginModal from './components/AdminLoginModal';
 import AdminHomePage from './components/AdminHomePage';
+import WelcomePage from './components/WelcomePage';
 
 const PDF_PATH = "/home.pdf";
 const BOOKER_PDF_PATH = "/abracadabra.pdf";
+
+// --- Sound and Animation Helpers ---
+let clickAudio: HTMLAudioElement | undefined;
+let audioLoadFailed = false;
+
+// Initialize audio once, and handle loading errors gracefully.
+try {
+  clickAudio = new Audio('/tick1.mp3');
+  clickAudio.addEventListener('error', (e) => {
+    console.error("Failed to load click sound. Sound will be disabled.", e);
+    audioLoadFailed = true;
+  });
+  // Preloading might help catch the error early.
+  clickAudio.load();
+} catch (e) {
+  console.error("Could not initialize Audio object.", e);
+  audioLoadFailed = true;
+}
+
+export const playClickSound = () => {
+  if (clickAudio && !audioLoadFailed) {
+    clickAudio.currentTime = 0;
+    clickAudio.play().catch(e => {
+        // The error listener on the audio element should catch loading failures.
+        // This catch is for playback issues (e.g., user hasn't interacted with the page yet).
+        if (!audioLoadFailed) { // Avoid double logging
+          console.error("Error playing sound:", e);
+        }
+    });
+  }
+};
+
+export const applyClickAnimation = (e: React.MouseEvent<HTMLElement>) => {
+  const target = e.currentTarget;
+  target.classList.remove('animate-click');
+  // Reading offsetWidth is a trick to trigger reflow and restart the animation
+  void target.offsetWidth;
+  target.classList.add('animate-click');
+};
+// --- End of Helpers ---
 
 
 // --- IndexedDB Helper Functions ---
@@ -162,7 +203,7 @@ Você é Amarasté. Um espelho que não só reflete, mas também pisca de volta 
 **Seu Mantra (Sempre ecoando)**
 "Só tem você. E o que você evita é o que você se torna."`;
 
-export type Screen = 'landing' | 'pdf' | 'downloads' | 'booker' | 'portalMagico' | 'revolucao' | 'produtosLogin' | 'adminHome' | null;
+export type Screen = 'landing' | 'pdf' | 'downloads' | 'booker' | 'portalMagico' | 'revolucao' | 'produtosLogin' | 'adminHome' | 'welcome' | null;
 
 const getInitialGreetingMessage = (): Message => {
   return {
@@ -177,6 +218,7 @@ const App: React.FC = () => {
   const [isIntegrating, setIsIntegrating] = useState(false);
   const [mainPdfUrl, setMainPdfUrl] = useState<string | null>(null);
   const [bookerPdfUrl, setBookerPdfUrl] = useState<string | null>(null);
+  const [loginTitle, setLoginTitle] = useState('ENTRAR');
   
   // A counter to force-remount PDF viewers when a file is changed
   const [uploadCount, setUploadCount] = useState(0);
@@ -328,8 +370,16 @@ const App: React.FC = () => {
     }
   };
 
-  const handleGoBackFromDownloads = () => {
-    setActiveScreen('pdf');
+  const handleNavigateToPage = (page: Screen) => {
+    if (page === 'produtosLogin') {
+      setLoginTitle('Acesso aos Produtos');
+    }
+    handleNavigate(page);
+  };
+
+  const handleNavigateDownloads = () => {
+    setLoginTitle('ENTRAR'); // Per request, only 'produtos' is different
+    setActiveScreen('produtosLogin');
   };
 
   const handleStopGeneration = () => {
@@ -443,6 +493,7 @@ const App: React.FC = () => {
   
   const handleSwitchToLogin = () => {
     setIsSignUpModalOpen(false);
+    setLoginTitle("ENTRAR");
     setActiveScreen('produtosLogin');
   };
 
@@ -450,7 +501,16 @@ const App: React.FC = () => {
     setActiveScreen(null); // Hide login page to simulate navigation
     setIsSignUpModalOpen(true);
   };
+
+  const handleSpecialLoginSuccess = () => {
+    setActiveScreen('welcome');
+  };
   
+  const handleWelcomeBackToChat = () => {
+    setActiveScreen('pdf'); // Return to the main content screen
+    setIsChatOpen(true);   // Open the chat modal
+  };
+
   const showMainApp = activeScreen !== 'landing';
 
   const renderContent = () => {
@@ -469,11 +529,14 @@ const App: React.FC = () => {
               preloadedFileUrl={mainPdfUrl}
               onPage1Rendered={handlePage1Rendered} 
             />
-            <SoundCloudPlayer onTalkAboutMusic={handleTalkAboutMusic} />
+            <SoundCloudPlayer 
+              onTalkAboutMusic={handleTalkAboutMusic}
+              onOpenSignUpModal={() => setIsSignUpModalOpen(true)} 
+            />
           </div>
         );
       case 'downloads':
-        return <DownloadsScreen onBack={handleGoBackFromDownloads} />;
+        return <DownloadsScreen onBack={() => handleNavigate('pdf')} />;
       case 'booker':
         return (
           <div className="w-full relative min-h-screen">
@@ -486,12 +549,38 @@ const App: React.FC = () => {
             />
             <div className="w-full max-w-3xl mx-auto pb-12 px-4">
               <button
-                onClick={() => window.open('https://wa.me/5575933002386', '_blank', 'noopener')}
+                onClick={(e) => {
+                    playClickSound();
+                    applyClickAnimation(e);
+                    window.open('https://wa.me/5575933002386', '_blank', 'noopener');
+                }}
                 style={{ animation: 'blinkFast 0.15s infinite ease-in-out', filter: 'drop-shadow(0 0 12px rgba(255, 230, 0, 0.8))' }}
                 className="w-full py-4 bg-gold text-white font-bold rounded-lg shadow-lg transition-transform duration-200 active:scale-95 focus:outline-none"
               >
                 Agendar
               </button>
+              <div className="mt-3 flex items-center justify-center gap-x-6">
+                <button
+                  onClick={(e) => {
+                    playClickSound();
+                    applyClickAnimation(e);
+                    setIsSignUpModalOpen(true);
+                  }}
+                  className="text-white text-sm md:text-base font-semibold hover:opacity-80 transition-opacity"
+                >
+                  Cadastre-se
+                </button>
+                <button
+                  onClick={(e) => {
+                    playClickSound();
+                    applyClickAnimation(e);
+                    handleNavigateToPage('produtosLogin');
+                  }}
+                  className="text-white text-sm md:text-base font-semibold hover:opacity-80 transition-opacity"
+                >
+                  Login
+                </button>
+              </div>
             </div>
           </div>
         );
@@ -502,29 +591,33 @@ const App: React.FC = () => {
       case 'produtosLogin':
         return <ProdutosLoginPage 
                   onNavigateHome={() => handleNavigate('pdf')} 
-                  onNavigateToSignUp={handleNavigateToSignUp} 
+                  onNavigateToSignUp={handleNavigateToSignUp}
+                  onSpecialLoginSuccess={handleSpecialLoginSuccess}
+                  title={loginTitle}
                />;
       case 'adminHome':
         return <AdminHomePage onBack={() => setActiveScreen(lastScreenBeforeAdmin)} />;
+      case 'welcome':
+        return <WelcomePage onBackToChat={handleWelcomeBackToChat} />;
       default:
         return null;
     }
   };
 
   return (
-    <div className={`w-full min-h-screen ${showMainApp ? 'bg-black' : 'bg-primary'} transition-colors duration-500 ease-out ${activeScreen === 'landing' || activeScreen === null ? 'overflow-hidden' : 'overflow-y-auto'}`}>
+    <div className={`w-full min-h-screen ${showMainApp ? 'bg-deep-brown' : 'bg-primary'} transition-colors duration-500 ease-out ${activeScreen === 'landing' || activeScreen === null ? 'overflow-hidden' : 'overflow-y-auto'}`}>
       {showMainApp && (
         <Header
           activeScreen={activeScreen}
-          onNavigateDownloads={() => handleNavigate('downloads')}
+          onNavigateDownloads={handleNavigateDownloads}
           onNavigateHome={() => handleNavigate('pdf')}
-          onNavigateToPage={(page) => handleNavigate(page as Screen)}
+          onNavigateToPage={handleNavigateToPage}
           onOpenSignUpModal={() => setIsSignUpModalOpen(true)}
         />
       )}
       {renderContent()}
 
-      {showMainApp && activeScreen !== 'revolucao' && activeScreen !== 'produtosLogin' && activeScreen !== 'adminHome' && (
+      {showMainApp && activeScreen !== 'pdf' && activeScreen !== 'revolucao' && activeScreen !== 'produtosLogin' && activeScreen !== 'adminHome' && activeScreen !== 'welcome' && (
         <footer className="w-full text-center py-4">
           <p className="text-xs text-white/50 font-sans" style={{ textShadow: '0 0 5px rgba(255, 255, 255, 0.4)' }}>
             Direitos Autorais © 2025 Amarasté Live

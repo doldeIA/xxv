@@ -25,6 +25,8 @@
               'soft-beige': '#fdf6ec',
               'neon-fuchsia': '#e400ff',
               'gold': '#D4AF37',
+              'amaraste-brown': '#7b3f1a',
+              'deep-brown': '#211a14',
             }
           }
         }
@@ -410,6 +412,177 @@
       .glass-scrollbar::-webkit-scrollbar { width: 4px; }
       .glass-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
       .glass-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.6); border-radius: 2px; }
+
+      /* === START: LANDING BACKGROUND WITH mov.png === */
+      .landing-background {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        background: #3b2a1a url("/mov.png") no-repeat center center;
+        background-size: cover;
+      }
+
+      /* Ensure landing content stays above background */
+      .landing-content {
+        position: relative;
+        z-index: 10;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .landing-background {
+          background-position: center top;
+        }
+      }
+      /* === END: LANDING BACKGROUND WITH mov.png === */
+
+      /* === START: TACTILE CLICK ANIMATION === */
+      @keyframes button-click-pulse {
+        0% {
+          transform: scale(1);
+          filter: brightness(1);
+        }
+        50% {
+          transform: scale(1.05);
+          filter: brightness(1.2);
+        }
+        100% {
+          transform: scale(1);
+          filter: brightness(1);
+        }
+      }
+      .animate-click {
+        animation: button-click-pulse 0.25s ease-out;
+      }
+      /* === END: TACTILE CLICK ANIMATION === */
+
+      /* === START: Bandcamp Player Box === */
+      .bandcamp-box {
+        background-color: #ffffff;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        margin-top: 0; /* Ensures no extra space */
+      }
+      .bandcamp-box iframe {
+        border: 0;
+        width: 100%;
+        height: 180px; /* As per design notes */
+      }
+      @media (min-width: 640px) {
+        .bandcamp-box iframe {
+          height: 200px;
+        }
+      }
+      /* === END: Bandcamp Player Box === */
+
+      /* === START: Header Icon Glow === */
+      @keyframes subtle-red-glow {
+        0%, 100% {
+          filter: drop-shadow(0 0 1px rgba(201, 10, 10, 0.4));
+        }
+        50% {
+          filter: drop-shadow(0 0 4px rgba(201, 10, 10, 0.7));
+        }
+      }
+      .header-icon-glow {
+        animation: subtle-red-glow 2s infinite ease-in-out;
+      }
+      /* === END: Header Icon Glow === */
+
+      /* === START: CHAT + HOME PATCH === */
+
+      /* Copyright text */
+      .home-copyright {
+        text-align: center;
+        font-size: 0.9rem;
+        color: #fff;
+        margin-top: 1rem;
+        opacity: 0.85;
+      }
+
+      /* Chat avatar */
+      .chat-avatar img {
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        object-fit: cover;
+      }
+
+      /* Rotating triangle */
+      .chat-header-triangle {
+        width: 40px;
+        height: 40px;
+        background: currentColor;
+        clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        animation: spin 3s linear infinite;
+      }
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      /* === END: CHAT + HOME PATCH === */
+      
+      /* Cadastre-se Button Glow */
+      .cadastre-btn {
+        background-color: var(--amaraste-brown, #7b3f1a);
+        color: #fff;
+        font-weight: 600;
+        font-size: 1.125rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        text-align: center;
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.6),
+                    0 0 14px rgba(255, 255, 255, 0.3);
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+      }
+      .cadastre-btn:hover,
+      .cadastre-btn:focus-visible {
+        transform: scale(1.02);
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+                    0 0 18px rgba(255, 255, 255, 0.5);
+      }
+
+      /* === START: Booker Header Icon Glow === */
+      @keyframes booker-header-glow {
+        0%, 100% {
+          box-shadow: 0 0 6px rgba(255, 255, 255, 0.25);
+        }
+        50% {
+          box-shadow: 0 0 9px rgba(255, 255, 255, 0.40);
+        }
+      }
+
+      .booker-icon-glow {
+        border-radius: 9999px; /* Ensure glow is contained nicely */
+        transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+        animation: booker-header-glow 2s infinite ease-in-out;
+      }
+
+      .booker-icon-glow:hover,
+      .booker-icon-glow:focus-visible {
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.45);
+        animation: none; /* Pause the animation on hover for a stable glow */
+        transform: scale(1.05);
+      }
+      /* === END: Booker Header Icon Glow === */
+      
+      /* === START: Welcome Page Glow === */
+      @keyframes pulse-glow {
+        0%, 100% {
+          text-shadow: 0 0 6px rgba(255, 255, 255, 0.25), 0 0 12px rgba(255, 255, 255, 0.3);
+        }
+        50% {
+          text-shadow: 0 0 12px rgba(255, 255, 255, 0.55), 0 0 20px rgba(255, 255, 255, 0.45);
+        }
+      }
+      .welcome-text-glow {
+        animation: pulse-glow 2.2s infinite ease-in-out;
+      }
+      /* === END: Welcome Page Glow === */
     </style>
   <script type="importmap">
 {
@@ -423,7 +596,6 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 </head>
   <body>
     <div id="root"></div>

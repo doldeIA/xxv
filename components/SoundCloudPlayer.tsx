@@ -1,17 +1,17 @@
-
-
 import React from 'react';
 import PdfViewerScreen from './PdfViewerScreen';
+import { playClickSound, applyClickAnimation } from '../App';
 
 interface SoundCloudPlayerProps {
   onTalkAboutMusic: () => void;
+  onOpenSignUpModal: () => void;
 }
 
-const SoundCloudPlayer: React.FC<SoundCloudPlayerProps> = ({ onTalkAboutMusic }) => {
+const SoundCloudPlayer: React.FC<SoundCloudPlayerProps> = ({ onTalkAboutMusic, onOpenSignUpModal }) => {
   const embedUrl = "https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/amarastelive/explicar-a-garrafa&visual=true";
 
   return (
-    <div className="w-full max-w-3xl mx-auto mb-8">
+    <div className="w-full max-w-3xl mx-auto mb-8 px-2">
 
       <div className="relative p-1 rounded-lg bg-black neon-border">
         <div className="relative w-full rounded-lg overflow-hidden" style={{ paddingTop: '56.25%' }}>
@@ -34,23 +34,25 @@ const SoundCloudPlayer: React.FC<SoundCloudPlayerProps> = ({ onTalkAboutMusic })
         noPadding 
       />
       
-      <div>
+      {/* The "Explique a 'Garrafa'" button and Bandcamp player have been removed as per the request. */}
+      
+      <div className="w-full flex justify-center mt-6">
         <button
-          onClick={onTalkAboutMusic}
-          style={{ animation: 'blinkFast 0.15s infinite ease-in-out', filter: 'drop-shadow(0 0 12px rgba(255,255,255,0.8))' }}
-          className="
-            w-full py-4 
-            bg-gradient-to-r from-red-700 via-amber-300 to-red-700
-            text-white font-bold
-            rounded-lg
-            shadow-lg
-            transition-transform duration-200 active:scale-95
-            focus:outline-none
-          "
+          onClick={(e) => {
+            playClickSound();
+            applyClickAnimation(e);
+            onOpenSignUpModal();
+          }}
+          className="cadastre-btn"
+          aria-label="Cadastre-se"
         >
-          Explique a ‘Garrafa’
+          Cadastre-se
         </button>
       </div>
+
+      <p className="home-copyright mt-4">
+        Direitos Autorais © 2025 Amarasté Live
+      </p>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { playClickSound, applyClickAnimation } from '../App';
 
 interface AdminHomePageProps {
   onBack: () => void;
@@ -16,7 +17,11 @@ const AdminHomePage: React.FC<AdminHomePageProps> = ({ onBack }) => {
         />
       </div>
       <button
-        onClick={onBack}
+        onClick={(e) => {
+          playClickSound();
+          applyClickAnimation(e);
+          onBack();
+        }}
         className="px-10 py-4 bg-white/10 border-2 border-accent text-accent font-bold text-lg rounded-lg shadow-lg transition-all duration-300 hover:bg-accent hover:text-primary hover:scale-105 hover:shadow-2xl hover:shadow-accent/50 soft-neon"
         aria-label="Voltar para a página anterior"
       >
