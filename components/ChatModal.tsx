@@ -4,6 +4,7 @@ import CloseIcon from './icons/CloseIcon';
 import SendIcon from './icons/SendIcon';
 import RotatingCircleIcon from './icons/RotatingCircleIcon';
 import AssistantAvatar from './AssistantAvatar';
+import { playClickSound, applyClickAnimation } from '../App';
 
 export interface Message {
   sender: 'user' | 'assistant';
@@ -97,8 +98,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md" aria-modal="true" role="dialog">
       <div className="flex flex-col w-[90%] max-w-lg h-[80vh] max-h-[700px] bg-[#F5E3D0] rounded-2xl shadow-2xl ring-1 ring-warm-brown/10 animate-swoop-in">
         
-        <div className="relative flex items-center gap-3 sm:gap-4 text-warm-brown px-4 py-4 border-b border-warm-brown/10">
-          <AssistantAvatar />
+        <div className="relative flex items-center text-warm-brown pl-[68px] pr-4 py-4 border-b border-warm-brown/10">
           <div className="flex-grow pr-8">
             <h2 className="text-xl sm:text-2xl font-bold tracking-tight neon-heading-glow" style={{ fontFamily: "'Outfit', sans-serif" }}>
                 Vamos Pensar Juntos?
@@ -108,7 +108,11 @@ const ChatModal: React.FC<ChatModalProps> = ({
             </p>
           </div>
           <button
-            onClick={onClose}
+            onClick={(e) => {
+              playClickSound();
+              applyClickAnimation(e);
+              onClose();
+            }}
             className="absolute top-1/2 -translate-y-1/2 right-3 text-warm-brown/60 rounded-full p-2 transition-all hover:bg-warm-brown/10 hover:text-warm-brown z-20"
             aria-label="Close chat"
           >
@@ -131,7 +135,7 @@ const ChatModal: React.FC<ChatModalProps> = ({
                 className={`flex items-start gap-2.5 ${msg.sender === 'user' ? 'justify-end' : ''}`}
               >
                 {msg.sender === 'assistant' && (
-                   <AssistantAvatar className="w-8 h-8 flex-shrink-0" />
+                   <AssistantAvatar className="w-11 h-11 flex-shrink-0" />
                 )}
                 <div
                   className={`max-w-[80%] rounded-lg px-4 py-2 shadow-sm ${
@@ -182,7 +186,11 @@ const ChatModal: React.FC<ChatModalProps> = ({
             {isLoading ? (
               <button
                 type="button"
-                onClick={onStopGeneration}
+                onClick={(e) => {
+                  playClickSound();
+                  applyClickAnimation(e);
+                  onStopGeneration();
+                }}
                 className="w-11 h-11 flex-shrink-0 flex items-center justify-center bg-coke-red text-white rounded-md transition-colors blinking-stop-button"
                 aria-label="Stop generation"
               >
@@ -191,6 +199,11 @@ const ChatModal: React.FC<ChatModalProps> = ({
             ) : (
               <button
                 type="submit"
+                onClick={(e) => {
+                  if (!userInput.trim() || !!error) return;
+                  playClickSound();
+                  applyClickAnimation(e);
+                }}
                 disabled={!userInput.trim() || !!error}
                 className="bg-primary text-white p-3 rounded-full transition-transform duration-200 enabled:hover:scale-110 enabled:active:scale-100 disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Send message"

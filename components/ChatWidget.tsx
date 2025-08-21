@@ -1,5 +1,6 @@
 import React from 'react';
 import ChatIcon from './icons/ChatIcon';
+import { playClickSound, applyClickAnimation } from '../App';
 
 interface ChatWidgetProps {
   onOpen: () => void;
@@ -8,7 +9,11 @@ interface ChatWidgetProps {
 const ChatWidget: React.FC<ChatWidgetProps> = ({ onOpen }) => {
   return (
     <button
-      onClick={onOpen}
+      onClick={(e) => {
+        playClickSound();
+        applyClickAnimation(e);
+        onOpen();
+      }}
       className="fixed bottom-6 right-6 z-20 bg-white/50 backdrop-blur-sm text-primary p-4 rounded-full shadow-lg transition-transform hover:scale-110 active:scale-100 chat-pulse-glow"
       aria-label="Open chat"
     >

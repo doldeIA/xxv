@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import CloseIcon from './icons/CloseIcon';
+import { playClickSound, applyClickAnimation } from '../App';
 
 interface AdminLoginModalProps {
   onClose: () => void;
@@ -35,7 +36,11 @@ const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ onClose, onLogin }) =
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          onClick={onClose}
+          onClick={(e) => {
+            playClickSound();
+            applyClickAnimation(e);
+            onClose();
+          }}
           className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors z-10"
           aria-label="Fechar login de administrador"
         >
@@ -76,6 +81,12 @@ const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ onClose, onLogin }) =
 
           <button
             type="submit"
+            onClick={(e) => {
+              if (username && password) {
+                playClickSound();
+                applyClickAnimation(e);
+              }
+            }}
             disabled={isLoading}
             className="w-full mt-4 py-3 px-4 bg-transparent text-white font-bold rounded-lg ring-1 ring-white/50 hover:ring-white/80 transition disabled:opacity-50 disabled:cursor-wait"
           >

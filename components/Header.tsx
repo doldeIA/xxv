@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import MenuIcon from './icons/MenuIcon';
 import CloseIcon from './icons/CloseIcon';
@@ -9,7 +10,7 @@ import PaperPlaneIcon from './icons/PaperPlaneIcon';
 import PhoneIcon from './icons/PhoneIcon';
 import LinkedInIcon from './icons/LinkedInIcon';
 import UserGroupIcon from './icons/UserGroupIcon';
-import { Screen } from '../App';
+import { Screen, playClickSound, applyClickAnimation } from '../App';
 
 interface HeaderProps {
     activeScreen: Screen;
@@ -40,7 +41,7 @@ const Header: React.FC<HeaderProps> = ({ activeScreen, onNavigateDownloads, onNa
         { name: 'Cadastre-se', href: '#', type: 'modal' },
         { name: 'Booker', href: '#', type: 'page', pageKey: 'booker' },
         { name: 'Amarasté Tribus', href: 'https://chat.whatsapp.com/FDjQZNsS4GVKfhKQCY7Qok', type: 'external' },
-        { name: 'Produtos', href: '#', type: 'page', pageKey: 'produtosLogin', specialClass: 'm-2 backdrop-blur bg-white/20 rounded-xl shadow-lg' },
+        { name: 'Produtos', href: '#', type: 'page', pageKey: 'produtosLogin', specialClass: 'm-2 backdrop-blur bg-amaraste-brown text-white rounded-xl shadow-lg' },
         { name: 'Filosofia', href: 'https://chat.whatsapp.com/FDjQZNsS4GVKfhKQCY7Qok', type: 'external' },
         { name: 'Ecossistema', href: 'https://chat.whatsapp.com/FDjQZNsS4GVKfhKQCY7Qok', type: 'external' },
     ];
@@ -56,6 +57,8 @@ const Header: React.FC<HeaderProps> = ({ activeScreen, onNavigateDownloads, onNa
 
     const handleMenuItemClick = (e: React.MouseEvent, item: MenuItem) => {
         e.preventDefault();
+        playClickSound();
+        applyClickAnimation(e as unknown as React.MouseEvent<HTMLElement>);
         setIsOpen(false);
         switch (item.type) {
             case 'home':
@@ -127,7 +130,13 @@ const Header: React.FC<HeaderProps> = ({ activeScreen, onNavigateDownloads, onNa
                         {/* Left Side */}
                         <div>
                             {isBookerTheme && (
-                                <button onClick={onNavigateHome} className="text-white font-semibold text-lg px-3 py-2 rounded-md transition-colors hover:bg-white/10 active:scale-95">
+                                <button 
+                                  onClick={(e) => {
+                                      playClickSound();
+                                      applyClickAnimation(e);
+                                      onNavigateHome();
+                                  }} 
+                                  className="text-white font-semibold text-lg px-3 py-2 rounded-md transition-colors hover:bg-white/10 active:scale-95">
                                     Home
                                 </button>
                             )}
@@ -143,7 +152,11 @@ const Header: React.FC<HeaderProps> = ({ activeScreen, onNavigateDownloads, onNa
                                           href={item.href}
                                           target="_blank"
                                           rel="noopener noreferrer"
-                                          className={`text-coke-red transition-all duration-200 neon-blink-red hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.7)] active:scale-110`}
+                                          onClick={(e) => {
+                                            playClickSound();
+                                            applyClickAnimation(e);
+                                          }}
+                                          className={`text-coke-red transition-all duration-200 header-icon-glow hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.7)] active:scale-110`}
                                           aria-label={item.name}
                                       >
                                           <item.icon className="h-10 w-10" />
@@ -157,23 +170,24 @@ const Header: React.FC<HeaderProps> = ({ activeScreen, onNavigateDownloads, onNa
                         <div className="flex items-center gap-4" ref={menuRef}>
                             {isBookerTheme && (
                                <>
-                                   <a href="https://instagram.com/amarastelive" target="_blank" rel="noopener noreferrer" className="text-white p-2 rounded-full transition-all duration-200 hover:bg-white/20 active:scale-95 hover:ring-1 hover:ring-white/50" aria-label="Instagram">
+                                   <a href="https://www.instagram.com/chamabruxaa" target="_blank" rel="noopener noreferrer" onClick={(e) => { playClickSound(); applyClickAnimation(e); }} className="text-white p-2 transition-all duration-200 hover:bg-white/20 active:scale-95 booker-icon-glow" aria-label="Instagram">
                                        <InstagramIcon className="h-6 w-6" />
                                    </a>
-                                   <a href="https://wa.me/5575933002386" target="_blank" rel="noopener noreferrer" className="text-white p-2 rounded-full transition-all duration-200 hover:bg-white/20 active:scale-95 hover:ring-1 hover:ring-white/50" aria-label="Contato por WhatsApp">
+                                   <a href="https://api.whatsapp.com/send/?phone=5575933002386&text&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer" onClick={(e) => { playClickSound(); applyClickAnimation(e); }} className="text-white p-2 transition-all duration-200 hover:bg-white/20 active:scale-95 booker-icon-glow" aria-label="Contato por WhatsApp">
                                        <PhoneIcon className="h-6 w-6" />
                                    </a>
-                                   <a href="https://linkedin.com/in/yourprofile" target="_blank" rel="noopener noreferrer" className="text-white p-2 rounded-full transition-all duration-200 hover:bg-white/20 active:scale-95 hover:ring-1 hover:ring-white/50" aria-label="LinkedIn">
-                                       <LinkedInIcon className="h-6 w-6" />
-                                   </a>
-                                   <a href="https://chat.whatsapp.com/FDjQZNsS4GVKfhKQCY7Qok" target="_blank" rel="noopener noreferrer" className="text-white p-2 rounded-full transition-all duration-200 hover:bg-white/20 active:scale-95 hover:ring-1 hover:ring-white/50" aria-label="Grupo de Membros">
+                                   <a href="https://api.whatsapp.com/send/?phone=5575933002386&text&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer" onClick={(e) => { playClickSound(); applyClickAnimation(e); }} className="text-white p-2 transition-all duration-200 hover:bg-white/20 active:scale-95 booker-icon-glow" aria-label="Grupo de Membros">
                                        <UserGroupIcon className="h-6 w-6" />
                                    </a>
                                </>
                             )}
                             <button
-                                onClick={() => setIsOpen(!isOpen)}
-                                className={`inline-flex items-center justify-center p-2 rounded-md focus:outline-none ${menuIconColorClass} transition-all duration-300 hover:text-accent hover:drop-shadow-[0_0_5px_theme(colors.accent)]`}
+                                onClick={(e) => {
+                                  playClickSound();
+                                  applyClickAnimation(e);
+                                  setIsOpen(!isOpen);
+                                }}
+                                className={`inline-flex items-center justify-center p-2 rounded-full focus:outline-none ${menuIconColorClass} transition-all duration-300 hover:text-accent ${isBookerTheme ? 'booker-icon-glow' : 'hover:drop-shadow-[0_0_5px_theme(colors.accent)]'}`}
                                 aria-controls="dropdown-menu"
                                 aria-expanded={isOpen}
                             >
@@ -223,7 +237,11 @@ const Header: React.FC<HeaderProps> = ({ activeScreen, onNavigateDownloads, onNa
                     <div className="w-[90%] max-w-sm bg-blue-800/20 backdrop-blur-lg rounded-lg shadow-2xl ring-1 ring-white/20 p-8 flex flex-col items-center gap-6">
                         <p className="text-white text-xl text-center font-semibold">Estamos nesse momento atualizando o app…</p>
                         <button
-                            onClick={() => setIsUpdateModalOpen(false)}
+                            onClick={(e) => {
+                                playClickSound();
+                                applyClickAnimation(e);
+                                setIsUpdateModalOpen(false);
+                            }}
                             className="text-white font-semibold px-8 py-3 rounded-md transition-all duration-200 hover:bg-white/10 ring-1 ring-white/30"
                         >
                             Voltar
